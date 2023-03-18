@@ -1,11 +1,11 @@
 <?php 
 
 // mes variables
-$Nom = $_POST['nom'];
-$Prenom = $_POST['prenom'];
-$Email = $_POST['email'];
-$Telephone= $_POST['telephone'];
-$Message = $_POST['message'];
+$nom = $_POST['nom'];
+$prenom = $_POST['prenom'];
+$email = $_POST['email'];
+$telephone= $_POST['telephone'];
+$message = $_POST['message'];
 $array = [];
 
 // function verification 
@@ -30,13 +30,13 @@ function VerifPassword($variable, $variable2, $array) {
 $array = Verif($nom, 2, 200, 'Votre nom est incorrecte', $array);
 $array = Verif($prenom, 2, 200, 'Votre prenom est incorrecte', $array);
 $array = Verif($email, 10, 200, 'Votre email est incorrecte', $array);
-$array = Verif($telephone, 10, 200, 'Votre email est incorrecte', $array);
-$array = VerifPassword($email, $telephone, $array);
+$array = Verif($telephone, 10, 200, 'Votre numéro de tel est incorrecte', $array);
+$array = Verif($message, 10, 200, 'Votre message ne respecte pas nos standards', $array);
 
 // initialise la base de données
 function Database() {
     try {
-        $db="f2i";
+        $db="meriackphp";
         $dbhost="localhost";
         $dbport=3306;
         $dbuser="root";
@@ -52,12 +52,11 @@ function Database() {
 }
 
 // function d'insertion
-function Insert($pdo, $firstname, $lastname, $email, $email) {
+function Insert($pdo, $nom, $prenom, $email, $telephone, $message) {
     try {    
-        $password = password_hash($password, PASSWORD_ARGON2I);
-        $stmt=$pdo->prepare("INSERT INTO user(firstname, lastname, email, password) VALUES (?, ?, ?, ?);");
-        $stmt->execute([$firstname, $lastname, $email, $password]);
-        header('Location:  http://localhost/');
+        $stmt=$pdo->prepare("INSERT INTO user(nom, prenom, email, telephone, message) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$nom, $prenom, $email, $telephone, $message]);
+        header('Location:  afficher.php');
         return;
     } catch (Exception $e) {
         echo $e->getMessage();
@@ -97,11 +96,5 @@ if (count($array) > 0) {
 }
 
 // j'insert les données
-Insert(Database(), htmlspecialchars($nom), htmlspecialchars($prenom), $email, $password);
-
-
-
-
-
-
-?>
+Insert(Database(), htmlspecialchars($nom), htmlspecialchars($prenom), $email, $telephone, $message);
+?>    
